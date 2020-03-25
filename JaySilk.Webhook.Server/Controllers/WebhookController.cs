@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using JaySilk.Webhook.Common.Filter;
+using JaySilk.Webhook.Common.Mvc;
 
 namespace JaySilk.Webhook.Server.Controllers
 {

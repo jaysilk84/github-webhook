@@ -11,14 +11,14 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc;
 using JaySilk.Webhook.Common.Math;
 
-namespace JaySilk.Webhook.Common.Filter
+namespace JaySilk.Webhook.Common.Mvc
 {
 
     // Implemented as a resource filter because it requires access to the http context. The 
     // signature from github is in the header and the body needs to be signed and compared 
     // to the signature. Authorization and Authentication filters don't give you the http
     // context and it's not recommended because if you use IHttpContextAccessor it's not
-    // cross platform (on a stack that doesn't deal with http)
+    // cross platform
     public class VerifySignatureResourceFilter : Attribute, IAsyncResourceFilter
     {
         public async Task OnResourceExecutionAsync(ResourceExecutingContext context, ResourceExecutionDelegate next)
@@ -33,6 +33,7 @@ namespace JaySilk.Webhook.Common.Filter
             else
             {
                 context.HttpContext.Request.EnableBuffering();
+                
                 using var reader = new StreamReader(context.HttpContext.Request.Body, encoding: Encoding.UTF8, detectEncodingFromByteOrderMarks: false);
                 var signature = (string)context.HttpContext.Request.Headers["X-Hub-Signature"];
                 string body = await reader.ReadToEndAsync();
