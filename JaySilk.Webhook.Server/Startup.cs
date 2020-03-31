@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using JaySilk.Webhook.Common.Mvc;
 
 namespace JaySilk.Webhook.Server
 {
@@ -26,6 +27,11 @@ namespace JaySilk.Webhook.Server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+        }
+
+        public void ConfigureDevelopmentServices(IServiceCollection services) {
+            ConfigureServices(services);
+            services.AddGitHubSignatureFiltering(Configuration);          
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

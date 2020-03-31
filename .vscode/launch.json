@@ -10,7 +10,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/JaySilk.Webhook.Server/bin/Debug/netcoreapp3.0/JaySilk.Webhook.Server.dll",
+            "program": "${workspaceFolder}/JaySilk.Webhook.Server/bin/Debug/netcoreapp3.1/JaySilk.Webhook.Server.dll",
             "args": [],
             "cwd": "${workspaceFolder}/JaySilk.Webhook.Server",
             "stopAtEntry": false,

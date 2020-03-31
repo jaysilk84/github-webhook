@@ -21,49 +21,58 @@ namespace JaySilk.Webhook.Common.Mvc
     // cross platform
     public class VerifySignatureResourceFilter : Attribute, IAsyncResourceFilter
     {
-        public async Task OnResourceExecutionAsync(ResourceExecutingContext context, ResourceExecutionDelegate next)
-        {
-            // FIXME
-            var secret = "";
+        protected string SignatureHeaderName { get; }
+        protected string Secret { get; }
 
-            if (!context.HttpContext.Request.Headers.ContainsKey("X-Hub-Signature"))
-            {
+        public VerifySignatureResourceFilter(string signatureHeaderName, string secret)
+        {
+            SignatureHeaderName = signatureHeaderName;
+            Secret = secret;
+        }
+
+        protected async Task<bool> OnResourceExecutedAsync(ResourceExecutingContext context)
+        {
+            if (!context.HttpContext.Request.Headers.ContainsKey(SignatureHeaderName)) {
                 Fail(context, "HMAC signature missing");
-            }
-            else
-            {
+                return false;
+
+            } else {
                 context.HttpContext.Request.EnableBuffering();
-                
+
                 using var reader = new StreamReader(context.HttpContext.Request.Body, encoding: Encoding.UTF8, detectEncodingFromByteOrderMarks: false);
-                var signature = (string)context.HttpContext.Request.Headers["X-Hub-Signature"];
+                var signature = (string)context.HttpContext.Request.Headers[SignatureHeaderName];
                 string body = await reader.ReadToEndAsync();
 
                 context.HttpContext.Request.Body.Position = 0;
 
-                try
-                {
+                try {
                     // Convert body to UTF 8 bytes, same with secret since it's just an arbitrary string 
-                    if (!IsValid(Encoding.UTF8.GetBytes(body), new HexString(signature.Substring(5)), Encoding.UTF8.GetBytes(secret)))
-                    {
+                    if (!IsValid(Encoding.UTF8.GetBytes(body), new HexString(signature.Substring(5)), Encoding.UTF8.GetBytes(Secret))) {
                         Fail(context, "HMAC signature invalid");
-                        return;
+                        return false;
+                    } else {
+                        return true;
                     }
-                }
-                catch (FormatException ex)
-                {
-                    Fail(context, ex.Message);
-                    return;
-                }
 
-                await next();
+                } catch (FormatException ex) {
+                    Fail(context, ex.Message);
+                    return false;
+                }
             }
         }
 
-        public void OnResourceExecuted(ResourceExecutedContext context)
+        public virtual async Task OnResourceExecutionAsync(ResourceExecutingContext context, ResourceExecutionDelegate next)
+        {
+            if (await OnResourceExecutedAsync(context))
+                await next();
+        }
+
+
+        public virtual void OnResourceExecuted(ResourceExecutedContext context)
         {
 
         }
-        
+
         /// <summary>
         /// Compute the signature of the passed in body and see if it matches the
         /// expected passed in signature using the passed in key. Key must be the
@@ -87,7 +96,7 @@ namespace JaySilk.Webhook.Common.Mvc
         /// </summary>
         /// <param name="context"></param>
         /// <param name="message"></param>
-        private void Fail(ResourceExecutingContext context, string message)
+        protected void Fail(ResourceExecutingContext context, string message)
         {
             context.Result = new ContentResult()
             {
@@ -116,6 +125,4 @@ namespace JaySilk.Webhook.Common.Mvc
         }
 
     }
-
-
 }

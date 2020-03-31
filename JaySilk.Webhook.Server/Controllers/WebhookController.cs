@@ -14,7 +14,7 @@ namespace JaySilk.Webhook.Server.Controllers
     {
 
         [HttpPost]
-        [VerifySignatureResourceFilter]
+        [ServiceFilter(typeof(GitHubSignatureResourceFilter))]
         public void Post()
         {
 
