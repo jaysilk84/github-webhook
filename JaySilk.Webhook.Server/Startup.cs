@@ -27,12 +27,9 @@ namespace JaySilk.Webhook.Server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddGitHubSignatureFiltering(Configuration);
         }
 
-        public void ConfigureDevelopmentServices(IServiceCollection services) {
-            ConfigureServices(services);
-            services.AddGitHubSignatureFiltering(Configuration);          
-        }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -48,10 +45,14 @@ namespace JaySilk.Webhook.Server
 
             app.UseAuthorization();
 
+            
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
+
+            app.UseGitHubSignatureValidation();
         }
     }
 }

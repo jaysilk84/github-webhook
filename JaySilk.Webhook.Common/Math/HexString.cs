@@ -20,7 +20,8 @@ namespace JaySilk.Webhook.Common.Math
             _string = hex.ToLower();
         }
 
-        public HexString(byte[] bytes) {
+        public HexString(byte[] bytes)
+        {
             _bytes = bytes.ToImmutableArray();
             _string = BitConverter.ToString(bytes).Replace("-", "").ToLower();
         }
@@ -40,6 +41,41 @@ namespace JaySilk.Webhook.Common.Math
                 bytes[i / 2] = Convert.ToByte(hex.Substring(i, 2), 16);
             return bytes;
         }
+
+        public override bool Equals(object value)
+        {
+            var other = value as HexString;
+
+            if (Object.ReferenceEquals(null, other)) return false;
+            if (Object.ReferenceEquals(this, other)) return true;
+
+            return SafeIsEqual(this._bytes, other.GetBytes());
+        }
+
+        public static bool operator ==(HexString s1, HexString s2) => s1.Equals(s2);
+        public static bool operator !=(HexString s1, HexString s2) => !(s1 == s2);
+        public override int GetHashCode() => _string.GetHashCode();
+
+
+        /// <summary>
+        /// Constant time compare of two byte arrays. Doesn't short circut
+        /// after an unequal comparison to reduce timing attacks
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns>bool</returns>
+        private static bool SafeIsEqual(IEnumerable<byte> a, IEnumerable<byte> b)
+        {
+            if (a.Count() != b.Count())
+                return false;
+
+            var result = 0;
+            for (var i = 0; i < a.Count(); i++)
+                result |= a.ElementAt(i) ^ b.ElementAt(i);
+
+            return result == 0;
+        }
+
     }
 
 
