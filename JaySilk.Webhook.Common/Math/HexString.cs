@@ -29,7 +29,7 @@ namespace JaySilk.Webhook.Common.Math
         public override string ToString() => _string;
         public ImmutableArray<byte> GetBytes() => _bytes;
 
-        private static byte[] HexStringToByteArray(String hex)
+        private static byte[] HexStringToByteArray(string hex)
         {
             var numChars = hex.Length;
 
@@ -39,6 +39,7 @@ namespace JaySilk.Webhook.Common.Math
             var bytes = new byte[numChars / 2];
             for (var i = 0; i < numChars; i += 2)
                 bytes[i / 2] = Convert.ToByte(hex.Substring(i, 2), 16);
+            
             return bytes;
         }
 
@@ -64,7 +65,7 @@ namespace JaySilk.Webhook.Common.Math
         /// <param name="a"></param>
         /// <param name="b"></param>
         /// <returns>bool</returns>
-        private static bool SafeIsEqual(IEnumerable<byte> a, IEnumerable<byte> b)
+        private static bool SafeIsEqual(IEnumerable<byte> a, IEnumerable<byte> b) // TODO: Change to take array, IEnumerable doesnt make sense here
         {
             if (a.Count() != b.Count())
                 return false;

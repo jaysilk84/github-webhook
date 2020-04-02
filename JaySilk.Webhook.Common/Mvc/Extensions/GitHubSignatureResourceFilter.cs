@@ -1,7 +1,7 @@
 using System;
 using Microsoft.Extensions.Options;
 
-namespace JaySilk.Webhook.Common.Mvc
+namespace JaySilk.Webhook.Common.Mvc.Extensions
 {
     /// <summary>
     /// Github specific implementation of VerifySignatureResourceFilter. 
@@ -9,9 +9,10 @@ namespace JaySilk.Webhook.Common.Mvc
     public class GitHubSignatureResourceFilter : VerifySignatureResourceFilter
     {
         private const string DEFAULT_HEADER_NAME = "X-Hub-Signature";
-        public GitHubSignatureResourceFilter(IOptions<SignatureOptions> config) : base(config.Value.SignatureHeaderName ?? DEFAULT_HEADER_NAME, config.Value.Secret)
+        public GitHubSignatureResourceFilter(IOptions<SignatureOptions> config) : base(DEFAULT_HEADER_NAME, config.Value.Secret, s => s.Substring(5))
         {
 
         }
+
     }
 }

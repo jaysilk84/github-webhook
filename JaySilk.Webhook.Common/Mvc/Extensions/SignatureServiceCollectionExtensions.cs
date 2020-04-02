@@ -6,10 +6,10 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Builder;
 
-namespace JaySilk.Webhook.Common.Mvc
+namespace JaySilk.Webhook.Common.Mvc.Extensions
 {
 
-    public static class MvcServiceCollectionExtensions
+    public static class SignatureServiceCollectionExtensions
     {
         private static IServiceCollection RegisterServices(IServiceCollection services) {
             return services.AddSingleton<GitHubSignatureResourceFilter>();

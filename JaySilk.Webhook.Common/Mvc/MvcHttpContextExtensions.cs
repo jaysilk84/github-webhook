@@ -23,7 +23,7 @@ namespace JaySilk.Webhook.Common.Mvc
         public SignatureVerificationResult(bool isValid) : this(isValid, String.Empty) { }
     }
 
-    public static class SignatureHttpContextExtensions
+    public static class MvcHttpContextExtensions
     {
         private const int BUFFER_SIZE = 1024 * 45; // 45kb
 
@@ -38,7 +38,7 @@ namespace JaySilk.Webhook.Common.Mvc
                 detectEncodingFromByteOrderMarks: false,
                 leaveOpen: true);
 
-            string body = await reader.ReadToEndAsync();
+            var body = await reader.ReadToEndAsync();
 
             // Reset the stream for downstream filters
             context.Request.Body.Position = 0;
@@ -52,7 +52,7 @@ namespace JaySilk.Webhook.Common.Mvc
                 var actualHmacSignature = await context.SignAsync(secret);
                 var expectedHmacSignature = HmacSignature.CreateFromExisting(expectedSignature); // this can throw
 
-                return new SignatureVerificationResult(actualHmacSignature == expectedHmacSignature);
+                return new SignatureVerificationResult(actualHmacSignature == expectedHmacSignature); // safe compare
 
             } catch (FormatException ex) {
                 return new SignatureVerificationResult(false, ex.Message);
@@ -71,6 +71,4 @@ namespace JaySilk.Webhook.Common.Mvc
         public static async Task<SignatureVerificationResult> VerifySignatureFromHeaderAsync(this HttpContext context, string headerName, string secret) =>
             await VerifySignatureFromHeaderAsync(context, headerName, secret, (s) => s);
     }
-
-
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
+using JaySilk.Webhook.Common.Mvc.Extensions;
 using JaySilk.Webhook.Common.Mvc;
 
 namespace JaySilk.Webhook.Server.Controllers
@@ -14,7 +15,8 @@ namespace JaySilk.Webhook.Server.Controllers
     {
 
         [HttpPost]
-        [ServiceFilter(typeof(GitHubSignatureResourceFilter))]
+        //[ServiceFilter(typeof(GitHubSignatureResourceFilter))]
+        [VerifyGitHubSignature("1234")]
         public void Post()
         {
 

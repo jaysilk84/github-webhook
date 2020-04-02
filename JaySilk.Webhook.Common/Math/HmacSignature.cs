@@ -16,7 +16,8 @@ namespace JaySilk.Webhook.Common.Math
             Signature = GenerateSignature(content, secret);
         }
 
-        private HmacSignature(string existingSignatureAsString) {
+        private HmacSignature(string existingSignatureAsString)
+        {
             Signature = new HexString(existingSignatureAsString);
         }
 
@@ -29,7 +30,8 @@ namespace JaySilk.Webhook.Common.Math
             return new HexString(hmac.ComputeHash(content));
         }
 
-        public override bool Equals(object value) {
+        public override bool Equals(object value)
+        {
             var other = value as HmacSignature;
 
             if (Object.ReferenceEquals(null, other)) return false;
@@ -38,8 +40,8 @@ namespace JaySilk.Webhook.Common.Math
             return this.Signature == other.Signature;
         }
 
-        public static bool operator==(HmacSignature s1, HmacSignature s2) => s1.Equals(s2);
-        public static bool operator!=(HmacSignature s1, HmacSignature s2) => !(s1 == s2);
+        public static bool operator ==(HmacSignature s1, HmacSignature s2) => s1.Equals(s2);
+        public static bool operator !=(HmacSignature s1, HmacSignature s2) => !(s1 == s2);
 
         public override int GetHashCode() => Signature.GetHashCode();
 
@@ -48,5 +50,3 @@ namespace JaySilk.Webhook.Common.Math
 
 }
 
-
-}

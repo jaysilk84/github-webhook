@@ -10,7 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using JaySilk.Webhook.Common.Mvc;
+using JaySilk.Webhook.Common.Mvc.Extensions;
 
 namespace JaySilk.Webhook.Server
 {
@@ -45,14 +45,14 @@ namespace JaySilk.Webhook.Server
 
             app.UseAuthorization();
 
-            
+            //app.UseGitHubSignatureValidation();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
 
-            app.UseGitHubSignatureValidation();
+            
         }
     }
 }
