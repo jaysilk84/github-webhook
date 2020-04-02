@@ -5,27 +5,32 @@ using System.Linq;
 using System.IO;
 using System.Text;
 using Microsoft.AspNetCore.Http;
-using JaySilk.Webhook.Common.Math;
+using JaySilk.Webhook.Common.Security;
 
-namespace JaySilk.Webhook.Common.Mvc
+namespace JaySilk.Webhook.Common.Security
 {
-    public class SignatureVerificationResult
-    {
-        public string Message { get; }
-        public bool IsValid { get; }
-
-        public SignatureVerificationResult(bool isValid, string message)
-        {
-            IsValid = isValid;
-            Message = message;
-        }
-
-        public SignatureVerificationResult(bool isValid) : this(isValid, String.Empty) { }
+    public interface ISignatureVerificationResult {
+        bool IsValid {get;}
+        string Message {get;}
     }
 
-    public static class MvcHttpContextExtensions
+    public static class SecurityHttpContextExtensions
     {
         private const int BUFFER_SIZE = 1024 * 45; // 45kb
+
+        private class SignatureVerificationResult : ISignatureVerificationResult
+        {
+            public string Message { get; }
+            public bool IsValid { get; }
+
+            public SignatureVerificationResult(bool isValid, string message)
+            {
+                IsValid = isValid;
+                Message = message;
+            }
+
+            public SignatureVerificationResult(bool isValid) : this(isValid, String.Empty) { }
+        }
 
         public static async Task<HmacSignature> SignAsync(this HttpContext context, string secret)
         {
@@ -46,7 +51,7 @@ namespace JaySilk.Webhook.Common.Mvc
             return new HmacSignature(body, secret, Encoding.UTF8);
         }
 
-        public static async Task<SignatureVerificationResult> VerifySignatureAsync(this HttpContext context, string expectedSignature, string secret)
+        public static async Task<ISignatureVerificationResult> VerifySignatureAsync(this HttpContext context, string expectedSignature, string secret)
         {
             try {
                 var actualHmacSignature = await context.SignAsync(secret);
@@ -59,7 +64,7 @@ namespace JaySilk.Webhook.Common.Mvc
             }
         }
 
-        public static async Task<SignatureVerificationResult> VerifySignatureFromHeaderAsync(this HttpContext context, string headerName, string secret, Func<string, string> headerValueTransformer)
+        public static async Task<ISignatureVerificationResult> VerifySignatureFromHeaderAsync(this HttpContext context, string headerName, string secret, Func<string, string> headerValueTransformer)
         {
             if (!context.Request.Headers.ContainsKey(headerName))
                 return new SignatureVerificationResult(false, "HMAC signature missing");
@@ -68,7 +73,7 @@ namespace JaySilk.Webhook.Common.Mvc
             return await context.VerifySignatureAsync(expectedSignature, secret);
         }
 
-        public static async Task<SignatureVerificationResult> VerifySignatureFromHeaderAsync(this HttpContext context, string headerName, string secret) =>
+        public static async Task<ISignatureVerificationResult> VerifySignatureFromHeaderAsync(this HttpContext context, string headerName, string secret) =>
             await VerifySignatureFromHeaderAsync(context, headerName, secret, (s) => s);
     }
 }

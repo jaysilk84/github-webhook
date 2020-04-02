@@ -9,7 +9,7 @@ using System.Security.Cryptography;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc;
-using JaySilk.Webhook.Common.Math;
+using JaySilk.Webhook.Common.Security;
 
 namespace JaySilk.Webhook.Common.Mvc
 {

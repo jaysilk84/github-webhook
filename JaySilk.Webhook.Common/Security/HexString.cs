@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 
-namespace JaySilk.Webhook.Common.Math
+namespace JaySilk.Webhook.Common.Security
 {
     /// <summary>
     /// Represents a hexadecimal string. Provides access to the bytes or

@@ -10,7 +10,7 @@ namespace JaySilk.Webhook.Common.Mvc.Extensions
     {
         
        public static IApplicationBuilder UseGitHubSignatureValidation(this IApplicationBuilder builder) =>
-           builder.UseMiddleware<GitHubSignatureMiddleware>();
+           builder.UseMiddleware<VerifyGitHubSignatureMiddleware>();
 
     }
 

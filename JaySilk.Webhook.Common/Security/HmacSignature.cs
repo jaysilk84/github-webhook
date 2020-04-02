@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Security.Cryptography;
 
-namespace JaySilk.Webhook.Common.Math
+namespace JaySilk.Webhook.Common.Security
 {
 
     public sealed class HmacSignature

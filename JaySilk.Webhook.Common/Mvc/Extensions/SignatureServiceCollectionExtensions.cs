@@ -12,7 +12,7 @@ namespace JaySilk.Webhook.Common.Mvc.Extensions
     public static class SignatureServiceCollectionExtensions
     {
         private static IServiceCollection RegisterServices(IServiceCollection services) {
-            return services.AddSingleton<GitHubSignatureResourceFilter>();
+            return services.AddSingleton<VerifyGitHubSignatureResourceFilter>();
         }
 
         public static IServiceCollection AddGitHubSignatureFiltering(this IServiceCollection services, IConfiguration config) =>
