@@ -43,6 +43,10 @@ namespace JaySilk.Webhook.Common.Security
             return bytes;
         }
 
+        public bool UnsafeEquals(HexString value) {
+            return value.ToString() == this._string;
+        }
+
         public override bool Equals(object value)
         {
             var other = value as HexString;
@@ -65,14 +69,14 @@ namespace JaySilk.Webhook.Common.Security
         /// <param name="a"></param>
         /// <param name="b"></param>
         /// <returns>bool</returns>
-        private static bool SafeIsEqual(IEnumerable<byte> a, IEnumerable<byte> b) // TODO: Change to take array, IEnumerable doesnt make sense here
+        private static bool SafeIsEqual(IList<byte> a, IList<byte> b)
         {
-            if (a.Count() != b.Count())
+            if (a.Count != b.Count)
                 return false;
 
             var result = 0;
-            for (var i = 0; i < a.Count(); i++)
-                result |= a.ElementAt(i) ^ b.ElementAt(i);
+            for (var i = 0; i < a.Count; i++)
+                result |= a[i] ^ b[i];
 
             return result == 0;
         }
